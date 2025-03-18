@@ -1,4 +1,3 @@
-local ChangeHistoryService = game:GetService("ChangeHistoryService")
 local Players = game:GetService("Players")
 local PhysicsService = game:GetService("PhysicsService")
 
