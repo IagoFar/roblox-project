@@ -155,20 +155,28 @@ function RagdollService:UnragdollCharacter(character: Model)
     local player = Players:GetPlayerFromCharacter(character)
     local hum = character:FindFirstChildOfClass("Humanoid")
     
-    -- Restauración del control
-    self:_ControlNetworkOwnership(character, true)
-    if player then
-        self:_ControlNetworkOwnership(character, true)
-    end
-    
+    self:_enableCollisionParts(character, false)
+    self:_destroyJoints(character)
+    self:_enableMotor6d(character, true)
+        
     if hum then
         hum.AutoRotate = true
         hum.PlatformStand = false
         hum:ChangeState(Enum.HumanoidStateType.GettingUp)
     end
     
-    self:_enableMotor6d(character, true)
-    self:_destroyJoints(character)
+    task.wait(0.1)
+    if hum:GetState() == Enum.HumanoidStateType.FallingDown then
+        hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+        hum:ChangeState(Enum.HumanoidStateType.GettingUp)
+    end
+
+    -- Restauración del control
+    if player then
+        self:_ControlNetworkOwnership(character, true)
+    end
+    
+
 end
 
 function RagdollService:ApplyForce(character: Model, direction: Vector3, targetVelocity: number)
